@@ -14,4 +14,10 @@ MaxTime<-filter(Theo_grp_subject,conc==MaxConc)
 MaxTime<-select(MaxTime, Subject, Time)
 MaxTime<-arrange(MaxTime,Subject)
 names(MaxTime)<-c("Subject","TimeAtMax")
-Theo_grp_Subject<-merge(Theo_grp_subject,MaxTime,by="Subject")
+Theo_grp_subject<-merge(Theo_grp_subject,MaxTime,by="Subject")
+
+
+## Simplify and fit
+MaxConcset<-filter(Theo_grp_subject,conc==MaxConc)
+MaxConcset<-select(MaxConcset,Subject,Wt,Dose,MaxConc,TimeAtMax)
+fitobj<-lm(MaxConc~Wt + Dose, MaxConcset)
