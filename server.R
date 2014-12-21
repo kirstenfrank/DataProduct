@@ -25,15 +25,19 @@ MaxConcset<-mutate(MaxConcset,recipWt = 1/Wt)
 ## The best fit is one with interactions allowed between recipWt (1/Wt)
 ## and Dose. 
 fitobj4<-lm(MaxConc~recipWt * Dose, MaxConcset)
+newdata<-data.frame(matrix(data=NA,nrow=1,ncol=6))
+names(newdata)<-c("Subject","Wt","Dose","MaxConc","TimeAtMax","recipWt")
 
-predictMaxDose<-function(Dose,Wt) {
-    newdata<-as.data.frame(c(1,Wt,Dose,0.0, 0.0,1/Wt))
+predictMaxDose<-function(Amount,Wt) {
+    newdata$Wt<-Wt
+    newdata$Dose<-Amount/Wt
+    newdata$recipWt<-1/Wt
     predict(fitobj4, newdata,interval="prediction")
 }
 shinyServer(
     function(input,output) {
-        output$oDose<-renderPrint({input$Dose})
+        output$oAmount<-renderPrint({input$Amount})
         output$oWt<-renderPrint({input$Wt})
-        output$results<-renderPrint({predictMaxDose(input$Dose,input$Wt)})
+        output$results<-renderPrint({predictMaxDose(input$Amount,input$Wt)})
         }
     )
